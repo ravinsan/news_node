@@ -1,10 +1,11 @@
 import connectDB from "./connectDB/db.js";
-// import { PORT } from "./envhandler.js";
+import dotenv from "dotenv";
 import app from "./app.js";
 
+dotenv.config();
 
 app.get('/', (req, res) => res.send("Hello World!"));
-const PORT = 5000;
+const PORT = process.env.PORT;
 
 const startserver = async () =>{
     try{
