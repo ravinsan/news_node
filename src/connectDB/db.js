@@ -1,10 +1,9 @@
 import mongoose from "mongoose"
-import { MONGODB_URI } from "../envhandler.js"
 
 
 const connectDB = async () => {
     try{
-        const conn = await mongoose.connect(MONGODB_URI)
+        const conn = await mongoose.connect('mongodb+srv://ravinsan15:2KXvkHUlqycswf08@newsdb.vjsdv.mongodb.net/news_db')
         console.log(`MongoDB Connected: ${conn.connection.host}`)
     }
     catch(err){

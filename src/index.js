@@ -1,10 +1,10 @@
 import connectDB from "./connectDB/db.js";
-import { PORT } from "./envhandler.js";
+// import { PORT } from "./envhandler.js";
 import app from "./app.js";
 
 
 app.get('/', (req, res) => res.send("Hello World!"));
-
+const PORT = 5000;
 
 const startserver = async () =>{
     try{
