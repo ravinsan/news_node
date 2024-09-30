@@ -7,7 +7,7 @@ dotenv.config();
 app.get('/', (req, res) => res.send("Hello World!"));
 const PORT = process.env.PORT;
 
-const startserver = async () =>{
+(async () =>{
     try{
         await connectDB();
         app.listen(PORT, () =>  {return console.log(`Server started on port ${PORT}`)});
@@ -16,6 +16,6 @@ const startserver = async () =>{
         console.log(err)
         process.exit(1)
     }
-}
+})();
 
-startserver();
+
