@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
     password: {type: String, required: true},
     mobile: Number,
     image: String,
-    status: {type:Boolean, default: false},
+    status: {type:Boolean, default: true},
     create_by:{type:mongoose.Schema.Types.ObjectId, ref: "User"},
     updated_by:{type:mongoose.Schema.Types.ObjectId, ref: "User"},
 }, {timestamps: true});

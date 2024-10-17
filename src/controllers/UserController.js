@@ -13,7 +13,7 @@ export const users = async (req, res) =>{
 }
 
 export const usersInsert = async (req, res) => {
-      const getapidata = gadfsda();
+	console.log(req.body);
      const {name, email, password, mobile, status} = req.body;
      try{
             const checkDuplicateEmail = await User.findOne({email: email});
@@ -29,7 +29,7 @@ export const usersInsert = async (req, res) => {
             }
 
             const user = await User.create(userData);
-            return res.status(201).json({sucess: true, data: user});
+            return res.status(201).json({sucess: true, message:"User is Successfully saved.", data: user});
      }       
      catch(err){
         return res.status(500).json({message: err.message})
@@ -50,35 +50,47 @@ export const View = async (req, res) => {
       }
   };
 
-export const usersUpdate = async (req, res) =>{
+export const usersUpdate = async (req, res) => {
     const id = req.params.id;
-    const {name, email, password, mobile, status} = req.body;
-    
-    try{
-          const user = await User.findById(id);
-          if(!user) return res.status(404).json({message: "User not found"});
+    const { name, email, password, mobile, status } = req.body;
 
-          const hashedPassword = bcrypt.hashSync(password, 10);
+    try {
+        // Check if the user exists
+        const user = await User.findById(id);
+        if (!user) return res.status(404).json({ message: "User not found" });
 
-          const data = {
-              name: name,
-              email: email,
-              password: hashedPassword,
-              mobile: mobile,
-              status: status
-          };
-          const updateUser = await User.findByIdAndUpdate(id, data, {new: true});
-          if(!updateUser)
-          {
-              return res.status(404).json({message: "User not updated"});
-          }
+        // Check for duplicate email, excluding the current user
+        const checkDuplicateEmail = await User.findOne({ email: email, _id: { $ne: id } });
+        if (checkDuplicateEmail) {
+            return res.status(400).json({ message: "Email already exists" });
+        }
 
-          return res.status(200).json({sucess: true, data: updateUser});
+        
+        const data = {
+            name: name,
+            email: email,
+            mobile: mobile,
+            status: status
+        };
+
+        // Only update the password if it's provided
+        if (password) {
+            const hashedPassword = bcrypt.hashSync(password, 10);
+            data.password = hashedPassword;
+        }
+
+        const updateUser = await User.findByIdAndUpdate(id, data, { new: true });
+        if (!updateUser) {
+            return res.status(404).json({ message: "User not updated" });
+        }
+
+        return res.status(200).json({ success: true, message:"Data is Successfully updated!", data: updateUser });
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
     }
-    catch(err){
-        return res.status(500).json({message: err.message})
-    }
-} 
+};
+
+
 
 export const userDelete = async (req, res) => {
     const id = req.params.id;
@@ -96,4 +108,26 @@ export const userDelete = async (req, res) => {
     {
         return res.status(500).json({message : err.message});
     }
+}
+
+export const statusChange = async (req, res) =>{
+    const id = req.params.id;
+   try{
+         const user = await User.findById(id);
+         if(!user) return res.status(404).json({message: "User not found"});
+         
+         const data = {
+             status: !user.status  //if status is true then change to false else change to true
+         }
+         const updateUser = await User.findByIdAndUpdate(id, data, {new: true});
+         if(!updateUser)
+         {
+             return res.status(404).json({message: "User not updated"});
+         }
+         return res.status(200).json({sucess: true, message:"Status has been Successfully changed.", data: updateUser});
+   }
+   catch(err)
+   {
+    return res.status(500).json({message: err.message});  
+   }
 }
